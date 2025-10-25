@@ -1,3 +1,6 @@
+NOTES FOR PROJECT 
+
+Backend
 BasicTaskManager/
 ├─ BasicTaskManager.csproj
 ├─ Program.cs
@@ -20,8 +23,7 @@ Frontend/
     │ └─ TaskRow.tsx
     └─ index.css
 
-
-In Cmd
+Api Calls
 
 Get : curl -X GET http://localhost:5000/api/tasks
 Post : curl -X POST http://localhost:5000/api/tasks -H "Content-Type: application/json" -d "{\"description\":\"Learn ASP.NET\",\"isCompleted\":false}"
