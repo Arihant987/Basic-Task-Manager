@@ -1,36 +1,20 @@
-using Microsoft.AspNetCore.Builder;
-using Microsoft.Extensions.DependencyInjection;
-using Microsoft.Extensions.Hosting;
-
 var builder = WebApplication.CreateBuilder(args);
 
-// Add controller support
-builder.Services.AddControllers();
-builder.Services.AddEndpointsApiExplorer();
-builder.Services.AddSwaggerGen();
-
-// Enable CORS for frontend
+// Add CORS
 builder.Services.AddCors(options =>
 {
-    options.AddPolicy("AllowAll", policy =>
-    {
-        policy.AllowAnyOrigin()
-              .AllowAnyHeader()
-              .AllowAnyMethod();
-    });
+    options.AddPolicy("AllowAll",
+        policy => policy.AllowAnyOrigin().AllowAnyMethod().AllowAnyHeader());
 });
 
+builder.Services.AddControllers();
 var app = builder.Build();
 
-// Use Swagger for API testing
-if (app.Environment.IsDevelopment())
-{
-    app.UseSwagger();
-    app.UseSwaggerUI();
-}
-
 app.UseCors("AllowAll");
-app.UseHttpsRedirection();
 app.MapControllers();
+
+// Use Render PORT env variable
+var port = Environment.GetEnvironmentVariable("PORT") ?? "5000";
+app.Urls.Add($"http://*:{port}");
 
 app.Run();

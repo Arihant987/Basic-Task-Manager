@@ -7,6 +7,7 @@ const App: React.FC = () => {
   const [tasks, setTasks] = useState<TaskItem[]>([]);
   const [description, setDescription] = useState('');
   const [isCompleted, setIsCompleted] = useState(false);
+  const [filter, setFilter] = useState<'all' | 'active' | 'completed'>('all');
 
   const fetchTasks = async () => {
     try {
@@ -53,39 +54,72 @@ const App: React.FC = () => {
     }
   };
 
-  return (
-    <div className="max-w-md mx-auto mt-10">
-      <h1 className="text-2xl font-bold mb-4 text-center">Task Manager</h1>
+  // Filtered tasks
+  const filteredTasks = tasks.filter(task => {
+    if (filter === 'all') return true;
+    if (filter === 'active') return !task.isCompleted;
+    if (filter === 'completed') return task.isCompleted;
+    return true;
+  });
 
-      <div className="flex flex-col mb-4 space-y-2">
-        <input
-          type="text"
-          value={description}
-          onChange={e => setDescription(e.target.value)}
-          placeholder="Task description"
-          className="p-2 rounded border border-gray-300"
-        />
-        <label className="flex items-center space-x-2">
+  return (
+    <div className="min-h-screen bg-gradient-to-b from-gray-100 to-gray-50 flex flex-col items-center p-6">
+      {/* Header */}
+      <header className="text-center mb-8">
+        <h1 className="text-5xl font-extrabold text-gray-800 mb-2"> Task Manager</h1>
+        <p className="text-gray-600 text-lg">Organize your tasks like a pro!</p>
+      </header>
+
+      {/* Add Task Card */}
+      <div className="bg-white shadow-xl rounded-2xl p-6 w-full max-w-lg mb-6">
+        <div className="flex flex-col space-y-4">
           <input
-            type="checkbox"
-            checked={isCompleted}
-            onChange={e => setIsCompleted(e.target.checked)}
+            type="text"
+            value={description}
+            onChange={e => setDescription(e.target.value)}
+            placeholder="Enter task description..."
+            className="p-3 rounded-xl border border-gray-300 focus:ring-2 focus:ring-indigo-400 outline-none shadow-sm"
           />
-          <span>Is Completed?</span>
-        </label>
-        <button
-          onClick={handleAdd}
-          className="bg-blue-500 text-white p-2 rounded"
-        >
-          Add
-        </button>
+          <label className="flex items-center space-x-3 text-gray-700 font-medium">
+            <input
+              type="checkbox"
+              checked={isCompleted}
+              onChange={e => setIsCompleted(e.target.checked)}
+              className="w-6 h-6 text-indigo-500 rounded focus:ring-2 focus:ring-indigo-400"
+            />
+            <span>Mark as Completed</span>
+          </label>
+          <button
+            onClick={handleAdd}
+            className="bg-indigo-500 hover:bg-indigo-600 transition text-white font-bold p-3 rounded-xl shadow-md hover:shadow-lg"
+          >
+            Add Task
+          </button>
+        </div>
       </div>
 
-      <div>
-        {tasks.length === 0 ? (
-          <p className="text-gray-500 text-center">No tasks yet</p>
+      {/* Filter Bar */}
+      <div className="flex space-x-4 mb-6">
+        {['all', 'active', 'completed'].map(f => (
+          <button
+            key={f}
+            onClick={() => setFilter(f as any)}
+            className={`px-4 py-2 rounded-full font-medium transition
+              ${filter === f ? 'bg-indigo-500 text-white' : 'bg-gray-200 text-gray-700 hover:bg-gray-300'}`}
+          >
+            {f.charAt(0).toUpperCase() + f.slice(1)}
+          </button>
+        ))}
+      </div>
+
+      {/* Task List */}
+      <div className="w-full max-w-lg space-y-3">
+        {filteredTasks.length === 0 ? (
+          <p className="text-gray-500 text-center italic py-6 bg-white rounded-2xl shadow-md">
+            No tasks here. Add your first task! ✨
+          </p>
         ) : (
-          tasks.map(task => (
+          filteredTasks.map(task => (
             <TaskRow
               key={task.id}
               task={task}
