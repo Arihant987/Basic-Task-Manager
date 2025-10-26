@@ -1,7 +1,7 @@
 import axios from 'axios';
 import { TaskItem } from './types';
 
-const API_URL = 'http://localhost:5000/api/tasks'; // match your backend
+const API_URL = 'http://4.240.103.147//api/tasks'; // match your backend
 
 export const getTasks = async (): Promise<TaskItem[]> => {
   const res = await axios.get(API_URL);
