@@ -14,5 +14,5 @@ WORKDIR /app
 COPY --from=build /app/out .
 
 # Expose port Render will assign
-EXPOSE 10000
+EXPOSE 5000
 ENTRYPOINT ["dotnet", "BasicTaskManager.dll"]
